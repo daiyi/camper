@@ -1,4 +1,3 @@
-var co = require('co');
 exports.checkAvailable = function(nightmare) {
   return nightmare
     .wait('#filter')
@@ -11,21 +10,12 @@ exports.checkAvailable = function(nightmare) {
       if (content.length) {
         var match = content.match(/^(\d+)/)
         var parsedCount = parseInt(match[0], 10);
-        if (!parsedCount) {
+        if (parsedCount === NaN) {
           throw new Error('Could not parse site avaialbility content: "'+ content + '"')
         }
         return parsedCount
       }
       return 0
-      // var content = document.querySelector('.matchSummary').textContent
-      // if (content.length) {
-      //   var match = content.match('^(\d+)')
-      //   var parsedCount = parseInt(content[0], 10);
-      //   if (parsedCount) {
-      //   }
-      //   return parseInt(match, 10);
-      // }
-      // return 0;
     })
 }
 
@@ -43,11 +33,13 @@ exports.fillOutSearch = function*(nightmare, options) {
   if (options.siteType) {
     yield nightmare.select('#lookingFor', options.siteType)
   }
-
   yield nightmare
+    .wait(1000)
+    .insert('#arrivalDate')
     .insert('#arrivalDate', options.arrival)
+    .insert('#departureDate')
     .insert('#departureDate', options.departure)
-}
+  }
 
 exports.fillOutReservationDetails = function*(nightmare) {
   var maxOccupants = yield nightmare
@@ -95,7 +87,7 @@ exports.fillOutReservationDetails = function*(nightmare) {
 }
 
 exports.login = function(nightmare) {
-  return nightmare.
+  return nightmare
     .wait('#combinedFlowSignInKit_emailGroup_attrs')
     .insert('#combinedFlowSignInKit_emailGroup_attrs input', '')
     .wait('#combinedFlowSignInKit_passwrdGroup_attrs')
