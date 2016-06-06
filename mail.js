@@ -2,13 +2,7 @@ var wellknown = require('nodemailer-wellknown')
 var nodemailer = require('nodemailer')
 var config = require('./.config.json')
 var log = require('./logging')
-var transporter = nodemailer.createTransport({
-     service: 'Zoho', // <- resolved as 'Postmark' from the wellknown info
-     auth: {
-       'user': config.mailer.address,
-       'pass': config.mailer.p
-     }
-})
+var transporter = nodemailer.createTransport(config.mailer)
 transporter.verify(function(error, success) {
    if (error) {
      log.error(error);

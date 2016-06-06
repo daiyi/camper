@@ -19,16 +19,23 @@ exports.checkAvailable = function(nightmare) {
       return 0
     })
 }
+exports.getSiteUrl = function(nightmare) {
+  return nightmare
+    .evaluate(function () {
+      var element = document.querySelector('.book','.now')
+      return element.href;
+    });
+}
 
-exports.fillOutSearch = function*(nightmare, site, siteType) {
-  if (site.loop) {
+exports.fillOutSearch = function*(nightmare, site, siteType, loop) {
+  if (loop) {
     yield nightmare
-      .select('#loop', options.loop)
+      .select('#loop', loop)
   }
 
-  if (site.occupants) {
+  if (site.minOccupants) {
     yield nightmare
-      .insert('#camping_common_3012', options.occupants)
+      .insert('#camping_common_3012', site.minOccupants)
   }
 
   if (siteType) {

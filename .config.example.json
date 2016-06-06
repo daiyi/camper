@@ -1,0 +1,19 @@
+{
+  "mailer" : {
+     "service": "", // service
+     "auth": {
+       "user": "",// your e-mail address or user name
+       "pass": ""
+     }
+   },
+   "twilio": { // Once logged in twillio you can find this info here https://www.twilio.com/console/sms/dashboard
+     "SID": "", // Your twilio SID
+     "authToken": "" // Your twillio auth token
+   },
+   "card" : { // CC INFO
+     "name": "",
+     "number": "",
+     "code": "",
+     "exp" : ""
+   }
+}
