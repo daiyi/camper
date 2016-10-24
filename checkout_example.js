@@ -18,25 +18,29 @@ DEPLOY TO DigitalOcean
 // TODO: Conditional based on weather forcast for given park. If within some threahold (probably 2 weeks)
 
 var checkSite = require('./check_site.js');
+var checkout = require('./checkout.js');
 
 var run = function*(job) {
   var result = yield checkSite(job)
   var nightmare = result[0] // This is always the nightmare object to chain request to
   var job = result[1] // The job object you passed in originally
+  var checkout_success = false;
   if (job) {
     log.info(`completed workflow for ${job.name} for date range ${job.dates.arrival} - ${job.dates.departure}. ${job.sitesAvaiable} sites found ${job.siteUrl}`)
     var message = `there are sites avaialbe! ✨ at ${job.name} on ${job.dates.arrival} - ${job.dates.departure}, go snag them! ${job.siteUrl}`
     // twilio.text(config.notification.text, message);
-    mail.sendEmail(config.notification.email, message)
+    // mail.sendEmail(config.notification.email, message)
+    checkout_success = yield checkout(nightmare, job)
   } else {
     log.info('failed to find sites')
   }
 
   yield nightmare.end()
   var nextJob = jobs.pop();
-  if (nextJob) {
+  if (nextJob && !checkout_success) {
     co.wrap(run)(nextJob)
       .catch(function(error) {
+         console.log(error.stack);
          log.info("error checking site", error.stack);
       });
   }

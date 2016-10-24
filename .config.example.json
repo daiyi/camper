@@ -16,9 +16,11 @@
      "pass": "" // recreation.gov pw
    },
    "card" : { // CC INFO
-     "name": "",
+     "fname": "",
+     "lname": "",
      "number": "",
      "code": "",
-     "exp" : ""
+     "expm" : "",
+     "expy" : ""
    }
 }

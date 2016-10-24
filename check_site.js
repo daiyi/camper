@@ -8,7 +8,6 @@ var config = require('./.config.json');
 var reduce = require('lodash.reduce')
 var log = require('./logging.js')
 var logutils = require('./logging.utils.js')
-var mail = require('./mail');
 
 module.exports = function*(site) {
   var siteTypes = site.siteTypes;

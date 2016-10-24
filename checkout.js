@@ -1,8 +1,16 @@
-var log = require('./logging')
-module.exports = function*(site) {
-  var a = moment(site.dates.arrival, "MM/DD/YYYY");
-  var b = moment(site.dates.departure, "MM/DD/YYYY");
-  var lengthOfStay = a.diff(b, 'days');
+var co = require('co');
+var reduce = require('lodash.reduce');
+var log = require('./logging');
+var logutils = require('./logging.utils');
+var config = require('./.config.json');
+var moment = require('moment');
+var steps = require('./steps')
+var mail = require('./mail')
+module.exports = function*(nightmare, site) {
+  var dates = site.dates;
+  var a = moment(dates.arrival, "MM/DD/YYYY");
+  var b = moment(dates.departure, "MM/DD/YYYY");
+  var lengthOfStay = b.diff(a, 'days');
   yield nightmare
     .wait('.book.now')
     .click('.book.now')
@@ -33,9 +41,13 @@ module.exports = function*(site) {
   var card = config.card;
   yield steps.login(nightmare, user)
     .catch(logutils.createErrorHandlerFor(`login failed`, user ))
-  yield co.wrap(steps.fillOutReservationDetails)(nightmare)
+  yield co.wrap(steps.fillOutReservationDetails)(nightmare, site.equipment)
     .catch(logutils.createErrorHandlerFor(`failed to fill out reservation for ${site.name}`))
-  if (user[0].pay) {
-    yield steps.checkOut(nightmare, card);
+  var checkoutStatus = yield steps.checkout(nightmare, card);
+  if (!checkoutStatus) {
+    mail.sendEmail("kwyn.meagher+debug@gmail.com", "Checkout failed, check error logs")
   }
+  yield nightmare
+    .wait(1000)
+    .exists('.success')
 }

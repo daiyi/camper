@@ -50,7 +50,7 @@ exports.fillOutSearch = function*(nightmare, site, siteType, loop) {
     .insert('#departureDate', site.dates.departure)
   }
 
-exports.fillOutReservationDetails = function*(nightmare) {
+exports.fillOutReservationDetails = function*(nightmare, equipment) {
   var maxOccupants = yield nightmare
   // TODO: Make script to auto fill max
     .wait('#numoccupants')
@@ -68,6 +68,10 @@ exports.fillOutReservationDetails = function*(nightmare) {
     yield nightmare.insert('#numoccupants', maxOccupants)
   } else {
     throw new Error('could\'t find max number of occupants')
+  }
+  var equipmentSelect = yield nightmare.exists("#equip")
+  if (equipmentSelect) {
+    nightmare.select("#equip", equipment)
   }
     // TODO: Figure out better control flow
   var hasVehicleOption = yield nightmare.exists('#numvehicles')
@@ -97,8 +101,8 @@ exports.login = function(nightmare, user) {
   return nightmare
     .wait('#combinedFlowSignInKit_emailGroup_attrs')
     .insert('#combinedFlowSignInKit_emailGroup_attrs input', user.email)
-    .wait('#combinedFlowSignInKit_passwrdGroup_attrs')
-    .insert('#combinedFlowSignInKit_passwrdGroup_attrs input', user.p)
+    .wait('input[type="password"]')
+    .type('input[type="password"]', user.password)
     .click('#submitForm_submitForm')
 }
 
@@ -107,12 +111,12 @@ exports.checkout = function(nightmare, pay) {
       .click('#chkout')
       .wait('#cardTypeId_1')
       .select('#cardTypeId_1', 'VISA')
-      .insert('#cardnum_1', pay.n) // card number
-      .insert('#seccode_1', pay.c) // security code
-      .insert('#expmonth_1', pay.em)// expiration month
-      .insert('#expyear_1', pay.ey) // expiration month
-      .insert('#fname_1', pay.firstName)
-      .insert('#lname_1', pay.lastName)
+      .insert('#cardnum_1', pay.number) // card number
+      .insert('#seccode_1', pay.code) // security code
+      .insert('#expmonth_1', pay.expm)// expiration month
+      .insert('#expyear_1', pay.expy) // expiration year
+      .insert('#fname_1', pay.fname)
+      .insert('#lname_1', pay.lname)
       .wait('#ackacc')
       .check('#ackacc')
       .wait('#chkout')
