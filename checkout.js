@@ -1,5 +1,8 @@
-
+var log = require('./logging')
 module.exports = function*(site) {
+  var a = moment(site.dates.arrival, "MM/DD/YYYY");
+  var b = moment(site.dates.departure, "MM/DD/YYYY");
+  var lengthOfStay = a.diff(b, 'days');
   yield nightmare
     .wait('.book.now')
     .click('.book.now')
@@ -7,7 +10,7 @@ module.exports = function*(site) {
     // TODO: Infer based on arrival and departure dates
     // Decide if this is needed
     .insert('#lengthOfStay')
-    .insert('#lengthOfStay',2)
+    .insert('#lengthOfStay',lengthOfStay)
     .click('#btnbookdates')
     .catch(logutils.createErrorHandlerFor(`failed booking site for ${site.name} on ${dates.arrival} - ${dates.departure}`, site))
 
@@ -18,8 +21,8 @@ module.exports = function*(site) {
   if (error) {
     var errorElements = yield nightmare
       .evaluate(function(){
-        var errorEl = document.querySelectorAll('.msg.error')
-        return errorEl
+        var errorEl = document.querySelectorAll('.msg.error');
+        return errorEl;
       });
     var errorText = reduce(errorElements, function(text, el) {
       return text + ' ' + el.textContent },

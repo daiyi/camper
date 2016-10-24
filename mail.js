@@ -8,31 +8,31 @@ transporter.verify(function(error, success) {
      log.error(error);
      process.exit(1);
    } else {
-     log.info('Server is ready to take messages');
+     log.info('Mail server is ready to take messages');
    }
 })
 
-var mailUser = function(user, message) {
+var sendEmail = function(email, message) {
   var mailOptions = {
-    from: '"Campsite Camper" <no-reply@kwyn.io>', // sender address
-    to: user.email, // list of receivers
+    from: `"Campsite Camper" <${config.mailer.auth.user}>`, // sender address
+    to: email, // list of receivers
     subject: 'Site Avaialbe! ⛺', // Subject line
     text: message, // plaintext body
   }
   transporter.sendMail(mailOptions, function(error, info) {
     if (error) {
-      log.error(`failed to send mail to ${user.email}`, error)
+      log.error(`failed to send mail to ${email}`, error)
     }
-    log.info(`succesfully sent mail to ${user.email}`, info)
+    log.info(`succesfully sent mail to ${email}`, info)
   })
 }
-var mailUsers = function(users, message) {
-  users.forEach(function(user){
-    mailUser(user, message)
+var multiMail = function(emails, message) {
+  emails.forEach(function(email){
+    email(email, message)
   })
 }
 
-module.export = {
-  mailUsers: mailUsers,
-  mailUser: mailUser
+module.exports = {
+  sendEmails: multiMail,
+  sendEmail: sendEmail
 }

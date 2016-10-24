@@ -6,9 +6,14 @@
        "pass": ""
      }
    },
-   "twilio": { // Once logged in twillio you can find this info here https://www.twilio.com/console/sms/dashboard
+   "twilio": { // Once logged in twillio you can find this info here https://www.twilio.com/console
      "SID": "", // Your twilio SID
-     "authToken": "" // Your twillio auth token
+     "authToken": "", // Your twillio auth token
+     "twilioNumber": "" // Your provisined twillio number
+   },
+   "recreationUser": {
+     "email": "", // Recreation.gov user name
+     "pass": "" // recreation.gov pw
    },
    "card" : { // CC INFO
      "name": "",

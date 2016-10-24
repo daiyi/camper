@@ -19,6 +19,7 @@ exports.checkAvailable = function(nightmare) {
       return 0
     })
 }
+
 exports.getSiteUrl = function(nightmare) {
   return nightmare
     .evaluate(function () {

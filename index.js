@@ -6,7 +6,9 @@ var reduce = require('lodash.reduce')
 var log = require('./logging.js')
 var logutils = require('./logging.utils.js')
 var mail = require('./mail');
-var job = require('./job_config')
+var jobs = require('./job_config')
+var twilio = require('./twilio');
+var config = require('./.config.json')
 /*
 TOP PRIORITIES FOR TOMORROW
 LOGGING
@@ -23,33 +25,26 @@ var run = function*(job) {
   var nightmare = result[0] // This is always the nightmare object to chain request to
   var job = result[1] // The job object you passed in originally
   if (job) {
-    console.log(job)
     log.info(`completed workflow for ${job.name} for date range ${job.dates.arrival} - ${job.dates.departure}. ${job.sitesAvaiable} sites found ${job.siteUrl}`)
-    var message = `there are sites avaialbe at ${job.name} on ${job.dates.arrival} - ${job.dates.departure}, go snag them! ${job.siteUrl}`
+    var message = `there are sites avaialbe! ✨ at ${job.name} on ${job.dates.arrival} - ${job.dates.departure}, go snag them! ${job.siteUrl}`
+    // twilio.text(config.notification.text, message);
+    mail.sendEmail(config.notification.email, message)
   } else {
     log.info('failed to find sites')
   }
-  // TODO: send this to twilio and mailer
   yield nightmare.end()
-}
+  var nextJob = jobs.pop();
+  if (nextJob) {
+    co.wrap(run)(nextJob)
+      .catch(function(error) {
+         log.info("error checking site", error.stack);
+      });
+  }
+};
 
+var job = jobs.pop();
 co
   .wrap(run)(job)
   .catch(function(error) {
      log.info("error checking site", error.stack);
   });
-
-// var testSite = function(site) {
-//   site.dates = {
-//     arrival: '07/29/16',
-//     departure: '07/31/16'
-//   }
-//   co.wrap(checkSite)(site)
-//     .then(function(result) {
-//       log.info(`completed workflow for ${site.name} for date range ${site.dates.arrival} - ${site.dates.departure}. ${result} sites found`)
-//     })
-//     .catch(function(error) {
-//       log.error(`Error with side ${site.name} and date range ${site.dates.arrival} - ${site.dates.departure}`, error.stack)
-//     })
-// }
-// testSite(upperPines);

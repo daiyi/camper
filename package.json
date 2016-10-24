@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=dev node index.js",
+    "prod": "xvfb-run -a node --harmony index.js",
     "clean": "rm scraper.debug.log; rm scraper.error.log;"
   },
   "author": "",
@@ -14,9 +15,11 @@
     "co": "4.6.0",
     "lodash.clonedeep": "4.3.2",
     "lodash.reduce": "4.4.0",
+    "moment": "2.15.1",
     "nightmare": "2.5.0",
     "nodemailer": "2.4.2",
     "nodemailer-wellknown": "0.1.10",
+    "twilio": "2.11.0",
     "winston": "2.2.0",
     "yamljs": "0.2.7"
   }

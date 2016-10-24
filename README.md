@@ -6,25 +6,26 @@ By default this scraper will only notify you of campsite availability. It can be
 - Create a file name `.config.json` with the parameters found in `.config.example.json`
   - Example:
 ```js
-{
-  "mailer" : {
-     "service": "", // service
-     "auth": {
-       "user": "",// your e-mail address or user name
-       "pass": ""
-     }
-   },
-   "twilio": { // Once logged in twillio you can find this info here https://www.twilio.com/console/sms/dashboard
-     "SID": "", // Your twilio SID  
-     "authToken": "" // Your twillio auth token
-   },
-   "card" : { // CC INFO
-     "name": "",
-     "number": "",
-     "code": "",
-     "exp" : ""
-   }
-}
+    {
+      "mailer" : {
+         "service": "", // service
+         "auth": {
+           "user": "",// your e-mail address or user name
+           "pass": ""
+         }
+       },
+       "twilio": { // Once logged in twilio you can find this info here https://www.twilio.com/console/sms/dashboard
+         "SID": "", // Your twilio SID  
+         "authToken": "", // Your twilio auth token
+         "twilioNumber": "" // Your provisioned twilio number
+       },
+       "card" : { // CC INFO
+         "name": "",
+         "number": "",
+         "code": "",
+         "exp" : ""
+       }
+    }
 ```
 - the mailer config should mimic the parameters and structures found in the [nodemailer-wellknown documentation](https://github.com/nodemailer/nodemailer-wellknown)
   Note that if your well-known isn't working you can set it up from scratch. Setup found in the  [nodemailer repo](https://github.com/nodemailer/nodemailer)  
