@@ -1,12 +1,7 @@
-var co = require("co");
-var Nightmare = require("nightmare");
-var steps = require("./steps");
-var cloneDeep = require("lodash.clonedeep");
-var log = require("./logging.js");
-var logutils = require("./logging.utils.js");
+var log = require("../logging");
 const fetch = require("node-fetch");
 
-var headers = {
+var defaultHeaders = {
   "User-Agent":
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/62.0",
   Accept: "application/json, text/plain, */*",
@@ -23,13 +18,19 @@ var options = {
     "https://www.recreation.gov/api/camps/availability/campground/232449?start_date=2018-10-27T00%3A00%3A00.000Z&end_date=2018-10-28T00%3A00%3A00.000Z",
   headers: headers
 };
-
-function callback(error, response, body) {
-  if (!error && response.statusCode == 200) {
-    console.log(body);
-  }
-  console.error(error);
+/**
+ *
+ * @param {*} campgroundId
+ * @param {String} startDate timestamp representing start date of reservation windo
+ * @param {String} endDate timestamp representing end date of reservation window
+ */
+function buildRequest(campgroundId, startDate, endDate) {
+  encodedStartDate = encodeURIComponent(startDate);
+  encodedEndDate = encodeURIComponent(endDate);
+  const baseUrl = `https://www.recreation.gov/api/camps/availability/campground/${campgroundId}?start_date=${}`;
+  return fetch(baseUrl, {headers: defaultHeaders});
 }
+
 /**
  *
  * @param {Object} site site object from recreation.gov response
@@ -58,24 +59,22 @@ function getUnreservedSites(sites) {
   }, []);
 }
 
-/**
- *
- * @param {*} site site config object
- */
+async function checkAvailability(siteConfig) {
+  // var siteTypes = site.siteTypes;
+  // var dates = site.dates;
+  try {
+    // const response = await buildRequest(site.id, site.startDate, site.endDate);
+    const response = await fetch(options.url, { headers: defaultHeaders });
+    const body = await response.json();
+    console.log(body);
+    const unreservedSites = getUnreservedSites(body.campsites);
+    console.log(unreservedSites);
+  } catch (error) {
+    log.error("unexpected error retrieving sites", { siteConfig, error });
+  }
+}
 module.exports = {
-  main: async function(siteConfig) {
-    // var siteTypes = site.siteTypes;
-    // var dates = site.dates;
-    try {
-      const response = await fetch(options.url, { headers: options.headers });
-      const body = await response.json();
-      console.log(body);
-      const unreservedSites = getUnreservedSites(body.campsites);
-      console.log(unreservedSites);
-    } catch (error) {
-      log.error("unexpected error retrieving sites", { siteConfig, error });
-    }
-  },
+  checkAvailability,
   getUnreservedSites,
   isSiteAvailable
 };
