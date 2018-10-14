@@ -2,13 +2,9 @@ var co = require("co");
 var Nightmare = require("nightmare");
 var steps = require("./steps");
 var cloneDeep = require("lodash.clonedeep");
-var job = require("./job_config.js");
-var users = job.users;
-var config = require("./.config");
-var reduce = require("lodash.reduce");
 var log = require("./logging.js");
 var logutils = require("./logging.utils.js");
-var request = require("request");
+const fetch = require("node-fetch");
 
 var headers = {
   "User-Agent":
@@ -20,8 +16,6 @@ var headers = {
   "Cache-Control": "no-cache, no-store, must-revalidate",
   Connection: "keep-alive",
   DNT: "1"
-  // Cookie:
-  // "_ga=GA1.2.1871576669.1539377527; _gid=GA1.2.463202698.1539377527; _gat_UA-112750441-5=1"
 };
 
 var options = {
@@ -54,18 +48,34 @@ function isSiteAvailable(site) {
   return true;
 }
 
+function getUnreservedSites(sites) {
+  return Object.keys(sites).reduce((available, siteNumber) => {
+    const site = sites[siteNumber];
+    if (isSiteAvailable(site)) {
+      available.push(siteNumber);
+    }
+    return available;
+  }, []);
+}
+
 /**
  *
  * @param {*} site site config object
- * @returns Array {NigthmareInstance, siteInfo}
  */
 module.exports = {
-  main: function(site) {
+  main: async function(siteConfig) {
     // var siteTypes = site.siteTypes;
     // var dates = site.dates;
-    console.log("testing", options);
-    request(options, callback);
+    try {
+      const response = await fetch(options.url, { headers: options.headers });
+      const body = await response.json();
+      console.log(body);
+      const unreservedSites = getUnreservedSites(body.campsites);
+      console.log(unreservedSites);
+    } catch (error) {
+      log.error("unexpected error retrieving sites", { siteConfig, error });
+    }
   },
-  getUnreservedSites: function(sites) {},
+  getUnreservedSites,
   isSiteAvailable
 };
