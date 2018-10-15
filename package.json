@@ -12,9 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "co": "4.6.0",
-    "lodash.clonedeep": "4.3.2",
-    "lodash.reduce": "4.4.0",
     "nightmare": "2.5.0",
     "nodemailer": "2.4.2",
     "nodemailer-wellknown": "0.1.10",
