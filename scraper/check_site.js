@@ -13,11 +13,21 @@ var defaultHeaders = {
   DNT: "1"
 };
 
-var options = {
-  url:
-    "https://www.recreation.gov/api/camps/availability/campground/232449?start_date=2018-10-27T00%3A00%3A00.000Z&end_date=2018-10-28T00%3A00%3A00.000Z",
-  headers: headers
-};
+function leftZeroPad(int) {
+  if (int < 10) {
+    return `0${int}`;
+  }
+  return String(int);
+}
+
+function dateToTimestampString(date) {
+  console.log(date);
+  const year = date.getUTCFullYear();
+  const month = leftZeroPad(date.getUTCMonth() + 1);
+  const day = leftZeroPad(date.getUTCDate());
+  return `${year}-${month}-${day}T00:00:00.000Z`;
+}
+
 /**
  *
  * @param {*} campgroundId
@@ -27,8 +37,8 @@ var options = {
 function buildRequest(campgroundId, startDate, endDate) {
   encodedStartDate = encodeURIComponent(startDate);
   encodedEndDate = encodeURIComponent(endDate);
-  const baseUrl = `https://www.recreation.gov/api/camps/availability/campground/${campgroundId}?start_date=${}`;
-  return fetch(baseUrl, {headers: defaultHeaders});
+  const baseUrl = `https://www.recreation.gov/api/camps/availability/campground/${campgroundId}?start_date=${encodedStartDate}&end_date=${encodedEndDate}`;
+  return fetch(baseUrl, { headers: defaultHeaders });
 }
 
 /**
@@ -42,7 +52,7 @@ function isSiteAvailable(site) {
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
     site.availabilities[date];
-    if (site.availabilities[date] === "Reserved") {
+    if (site.availabilities[date] !== "Available") {
       return false;
     }
   }
@@ -53,24 +63,30 @@ function getUnreservedSites(sites) {
   return Object.keys(sites).reduce((available, siteNumber) => {
     const site = sites[siteNumber];
     if (isSiteAvailable(site)) {
-      available.push(siteNumber);
+      available.push(site);
     }
     return available;
   }, []);
 }
 
-async function checkAvailability(siteConfig) {
-  // var siteTypes = site.siteTypes;
-  // var dates = site.dates;
+async function checkAvailability(siteId, startDate, endDate) {
   try {
-    // const response = await buildRequest(site.id, site.startDate, site.endDate);
-    const response = await fetch(options.url, { headers: defaultHeaders });
+    const response = await buildRequest(
+      siteId,
+      dateToTimestampString(startDate),
+      dateToTimestampString(endDate)
+    );
+    console.log(response);
     const body = await response.json();
-    console.log(body);
     const unreservedSites = getUnreservedSites(body.campsites);
-    console.log(unreservedSites);
+    return unreservedSites;
   } catch (error) {
-    log.error("unexpected error retrieving sites", { siteConfig, error });
+    log.error("unexpected error retrieving sites", {
+      siteId,
+      startDate,
+      endDate,
+      error: String(error)
+    });
   }
 }
 module.exports = {
