@@ -3,6 +3,7 @@ const login = require("./login");
 const bookNow = require("./book_now");
 const config = require("./../.config.js");
 const { sendEmail } = require("./mail");
+const { sendText } = require("./twilio");
 const log = require("./../logging");
 
 const siteIds = {
@@ -70,9 +71,15 @@ async function main() {
       // if not credit card user
       // notify user that it's booked
       if (config.notifications.email) {
-        sendEmail(
+        await sendEmail(
           config.notifications.email,
           `You reservation has been create but must be completed. Please log in to recreation.gov and check your cart or log in and follow this link ${reservationURL}`
+        );
+      }
+      if (config.notifications.phoneNumber) {
+        await sendText(
+          config.notifications.phoneNumber,
+          `Your reservation has been created. Login to recreation.gov and finish checking out. You have 15 minutes`
         );
       }
       // else

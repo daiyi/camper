@@ -2,6 +2,7 @@ var wellknown = require("nodemailer-wellknown");
 var nodemailer = require("nodemailer");
 var config = require("./../.config");
 var log = require("./../logging");
+const util = require("util");
 
 var transporter = nodemailer.createTransport(config.mailer);
 
@@ -14,7 +15,7 @@ transporter.verify(function(error, success) {
   }
 });
 
-var sendEmail = function(email, message) {
+var sendEmail = async function(email, message) {
   var mailOptions = {
     from: `"Campsite Camper" <${config.mailer.auth.user}>`, // sender address
     to: email, // list of receivers
@@ -22,13 +23,13 @@ var sendEmail = function(email, message) {
     subject: "Site Avaialbe! ⛺", // Subject line
     text: message // plaintext body
   };
-
-  transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      log.error(`failed to send mail to ${email}`, error);
-    }
-    log.info(`succesfully sent mail to ${email}`, info);
-  });
+  const send = util.promisify(transporter.sendMail.bind(transporter));
+  try {
+    const info = await send(mailOptions);
+    log.info(`successfully sent mail to ${email}`, info);
+  } catch (error) {
+    log.error(`failed to send mail to ${email}`, error);
+  }
 };
 
 var multiMail = function(emails, message) {
