@@ -19,7 +19,7 @@ function leftZeroPad(int) {
   }
   return String(int);
 }
-
+// TODO: replace with .toISOString
 function dateToTimestampString(date) {
   console.log(date);
   const year = date.getUTCFullYear();
