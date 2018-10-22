@@ -92,4 +92,6 @@ async function main() {
   log.info("no sites found");
 }
 
-main();
+setInterval(() => {
+  main();
+}, 1000 * 60 * 1); // ms * s * m

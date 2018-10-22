@@ -1,6 +1,5 @@
 const fetch = require("node-fetch");
 module.exports = async function(bearerToken) {
-  console.log("wat");
   const cartUrl = "https://www.recreation.gov/api/cart/shoppingcart";
   const response = await fetch(cartUrl, {
     headers: { authorization: `Bearer ${bearerToken}` }
