@@ -13,9 +13,8 @@ module.exports = async function login(username, password) {
   );
   if (response.ok) {
     const body = await response.json();
-    console.log(JSON.stringify(body, null, 4));
     return body;
   } else {
-    throw new Error(`Login was not succesful for user ${username}`, response);
+    throw new Error(`Login was not successful for user ${username}`, response);
   }
 };

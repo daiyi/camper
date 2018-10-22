@@ -24,8 +24,6 @@ module.exports = async function bookNow(
     check_in: startDate.toISOString(),
     check_out: endDate.toISOString()
   });
-  console.log(bearerTokenHeader);
-  console.log(requestBody);
   const response = await fetch(
     `https://www.recreation.gov/api/camps/reservations`,
     {
@@ -40,14 +38,12 @@ module.exports = async function bookNow(
       body: requestBody
     }
   );
-  // if (!response.ok) {
-  //   throw new Error(
-  //     `Recieved error ${response.status}: ${response.statusText}`
-  //   );
-  // }
-  console.log(response);
+  if (!response.ok) {
+    throw new Error(
+      `Recieved error ${response.status}: ${response.statusText}`
+    );
+  }
   const body = await response.json();
-  console.log("body", body);
   // extract reservation.reservation_id and return
   return body.reservation.reservation_id;
 };

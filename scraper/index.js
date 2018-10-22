@@ -1,15 +1,11 @@
 const { checkAvailability } = require("./check_site");
 const login = require("./login");
 const bookNow = require("./book_now");
+const checkCart = require("./check_cart.js");
 const config = require("./../.config.js");
 const { sendEmail } = require("./mail");
 const { sendText } = require("./twilio");
 const log = require("./../logging");
-
-const siteIds = {
-  Yosemite: [232449, 232450, 232447],
-  Tuolumne: [232448]
-};
 
 /**
  * Job
@@ -44,9 +40,6 @@ async function main() {
     }
     log.info(`no sites found at ${ids[i]}`);
   }
-
-  console.log(JSON.stringify(sites, null, 4));
-  console.log(sites.length);
   if (sites.length) {
     try {
       // log in
@@ -54,7 +47,12 @@ async function main() {
         config.recreationUser.email,
         config.recreationUser.pass
       );
-      console.log(accountDetails);
+      // check cart
+      const activeReservations = await checkCart(accountDetails.access_token);
+      if (activeReservations.length > 0) {
+        log.info("active reservations on account", config.recreationUser.email);
+        return;
+      }
       // take the first site
       // book site by creating a reservation
       const reservationId = await bookNow(
@@ -91,6 +89,7 @@ async function main() {
       log.error(error);
     }
   }
+  log.info("no sites found");
 }
 
 main();

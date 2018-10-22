@@ -21,7 +21,6 @@ function leftZeroPad(int) {
 }
 // TODO: replace with .toISOString
 function dateToTimestampString(date) {
-  console.log(date);
   const year = date.getUTCFullYear();
   const month = leftZeroPad(date.getUTCMonth() + 1);
   const day = leftZeroPad(date.getUTCDate());
@@ -76,7 +75,6 @@ async function checkAvailability(siteId, startDate, endDate) {
       dateToTimestampString(startDate),
       dateToTimestampString(endDate)
     );
-    console.log(response);
     const body = await response.json();
     const unreservedSites = getUnreservedSites(body.campsites);
     return unreservedSites;
