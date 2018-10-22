@@ -5,18 +5,22 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=dev node index.js",
-    "prod": "xvfb-run -a node --harmony index.js",
-    "clean": "rm scraper.debug.log; rm scraper.error.log;"
+    "clean": "rm scraper.debug.log; rm scraper.error.log;",
+    "build": "cp node_modules/bulma/css/bulma.min.css server/static/bulma.min.css",
+    "scraper": "node scraper/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nightmare": "2.5.0",
+    "bulma": "0.7.2",
+    "express": "4.16.4",
+    "jade": "1.11.0",
+    "knex": "0.15.2",
+    "node-fetch": "2.2.0",
     "nodemailer": "2.4.2",
     "nodemailer-wellknown": "0.1.10",
-    "twilio": "2.11.0",
-    "winston": "2.2.0",
-    "yamljs": "0.2.7"
+    "sqlite3": "4.0.2",
+    "twilio": "3.23.1",
+    "winston": "2.2.0"
   }
 }
