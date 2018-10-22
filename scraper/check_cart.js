@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const log = require ('./../logging');
 module.exports = async function(bearerToken) {
   const cartUrl = "https://www.recreation.gov/api/cart/shoppingcart";
   const response = await fetch(cartUrl, {
@@ -6,9 +7,8 @@ module.exports = async function(bearerToken) {
   });
   if (response.ok) {
     const body = await response.json();
-    console.log(body.reservations);
     return body.reservations;
   }
-  console.error(response);
+  log.error(`failed to check cart`, response);
   return [];
 };

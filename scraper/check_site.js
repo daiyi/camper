@@ -48,9 +48,11 @@ function buildRequest(campgroundId, startDate, endDate) {
  */
 function isSiteAvailable(site) {
   const dates = Object.keys(site.availabilities).sort();
+  if (dates.length < 1) {
+    return false;
+  }
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
-    site.availabilities[date];
     if (site.availabilities[date] !== "Available") {
       return false;
     }

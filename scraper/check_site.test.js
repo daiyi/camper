@@ -54,7 +54,7 @@ const noDaysAvailableSite = function(siteNumber) {
   };
 };
 
-describe("isSiteAvailable", () => {
+describe.only("isSiteAvailable", () => {
   describe("when all days are available", () => {
     it("returns true", () => {
       const test = allDaysAvailableSite("101");
@@ -67,6 +67,12 @@ describe("isSiteAvailable", () => {
   });
   test("when no days are available", () => {
     const test = noDaysAvailableSite("103");
+    expect(isSiteAvailable(test)).toBe(false);
+  });
+  test("When availability object is empty", () => {
+    let test = noDaysAvailableSite("104");
+    test.availabilities = {};
+    console.log(test);
     expect(isSiteAvailable(test)).toBe(false);
   });
 });

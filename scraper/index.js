@@ -40,7 +40,8 @@ async function main() {
     }
     log.info(`no sites found at ${ids[i]}`);
   }
-  if (sites.length) {
+  if (sites.length > 0) {
+    log.info(`found ${sites.length} for ${campgroundId}`, sites);
     try {
       // log in
       const accountDetails = await login(
@@ -91,7 +92,8 @@ async function main() {
   }
   log.info("no sites found");
 }
-
+log.info(`scraper starting for the following dates ${config.startDate} - ${config.endDate}`);
+main();
 setInterval(() => {
   main();
-}, 1000 * 60 * 1); // ms * s * m
+}, 1000 * 60 * 5); // ms * s * m

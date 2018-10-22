@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const log = require("./../logging");
 /**
  * Creates a booking and creates a reservation id
  *
@@ -17,10 +18,11 @@ module.exports = async function bookNow(
   startDate,
   endDate
 ) {
+  log.info('book now', campsite_id)
   const bearerTokenHeader = `Bearer ${access_token}`;
   const requestBody = JSON.stringify({
-    account_id: account_id,
-    campsite_id: campsite_id,
+    account_id,
+    campsite_id,
     check_in: startDate.toISOString(),
     check_out: endDate.toISOString()
   });
@@ -31,14 +33,21 @@ module.exports = async function bookNow(
       headers: {
         authorization: bearerTokenHeader,
         Accept: "application/json, text/plain, */*",
-        "Content-Type": " application/json;charset=utf8"
-        // Host: "www.recreation.gov",
-        // Referer: `https://www.recreation.gov/camping/campgrounds/${campgroundId}/campsites`
+        "Content-Type": " application/json;charset=utf8",
+        Host: "www.recreation.gov",
+        Referer: `https://www.recreation.gov/camping/campgrounds/${campgroundId}/campsites`
       },
       body: requestBody
     }
   );
-  if (!response.ok) {
+  log.info(`book now response status is okay : ${response.ok}`)
+  if (response.ok === false) {
+    try {
+      const body = await response.json()
+      log.error('recieved error on book now request from recreation.gov', body);
+    } catch (e) {
+      log.error('Could not parse book now response body error');
+    }
     throw new Error(
       `Recieved error ${response.status}: ${response.statusText}`
     );
