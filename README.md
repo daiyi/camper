@@ -1,5 +1,6 @@
 # Campsite Camper
 By default this scraper will only notify you of campsite availability. It can be setup to automate way more though.
+
 ## Quick Start
 
 ### Setting up a job.
@@ -19,6 +20,7 @@ By default this scraper will only notify you of campsite availability. It can be
          "authToken": "", // Your twilio auth token
          "twilioNumber": "" // Your provisioned twilio number
        },
+       // Not needed yet as checkout isn't automated.
        "card" : { // CC INFO
          "name": "",
          "number": "",
@@ -30,22 +32,10 @@ By default this scraper will only notify you of campsite availability. It can be
 - the mailer config should mimic the parameters and structures found in the [nodemailer-wellknown documentation](https://github.com/nodemailer/nodemailer-wellknown)
   Note that if your well-known isn't working you can set it up from scratch. Setup found in the  [nodemailer repo](https://github.com/nodemailer/nodemailer)  
 
+Once the config is set you should be able to run `node scraper/index.js`
 
+If you want to see dev log output run `NODE_ENV=dev node scraper/index.js`
 
-## Running headless on Debian
-Install dependencies
-```sh
-# Install node
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
-apt-get update
-sudo apt-get install -y nodejs
-# Install xvfb to run nightmare js headlessly
-apt-get install xvfb
-```
-run command:
-```
-xvfb-run -a node index.js
-```
 ## File Structure
 ### index.js
 This is the entry point for the scraper. You can set this up to run a function on setInterval or more preferably just install a cron job\* that runs it at whatever frequency you want.
