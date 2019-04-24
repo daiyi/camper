@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const log = require("./../logging");
 
 module.exports = async function login(username, password) {
   const response = await fetch(
@@ -11,6 +12,7 @@ module.exports = async function login(username, password) {
       })
     }
   );
+  log.debug(`login response`, response);
   if (response.ok) {
     const body = await response.json();
     return body;

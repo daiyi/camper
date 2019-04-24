@@ -18,7 +18,7 @@ module.exports = async function bookNow(
   startDate,
   endDate
 ) {
-  log.info('book now', campsite_id)
+  log.info("book now", campsite_id);
   const bearerTokenHeader = `Bearer ${access_token}`;
   const requestBody = JSON.stringify({
     account_id,
@@ -40,19 +40,23 @@ module.exports = async function bookNow(
       body: requestBody
     }
   );
-  log.info(`book now response status is okay : ${response.ok}`)
+  log.info(`book now response status is okay : ${response.ok}`);
   if (response.ok === false) {
     try {
-      const body = await response.json()
-      log.error('recieved error on book now request from recreation.gov', body);
+      const body = await response.json();
+      log.error("received error on book now request from recreation.gov", body);
     } catch (e) {
-      log.error('Could not parse book now response body error');
+      log.error("Could not parse book now response body error");
     }
     throw new Error(
-      `Recieved error ${response.status}: ${response.statusText}`
+      `Received error ${response.status}: ${response.statusText}`
     );
   }
   const body = await response.json();
+  if (body.ok === false) {
+    log.error("received error on book now request from recreation.gov", body);
+  }
+  log.debug("Book now response", body);
   // extract reservation.reservation_id and return
   return body.reservation.reservation_id;
 };

@@ -72,11 +72,9 @@ function getUnreservedSites(sites) {
 
 async function checkAvailability(siteId, startDate, endDate) {
   try {
-    const response = await buildRequest(
-      siteId,
-      dateToTimestampString(startDate),
-      dateToTimestampString(endDate)
-    );
+    const start = dateToTimestampString(startDate);
+    const end = dateToTimestampString(endDate);
+    const response = await buildRequest(siteId, start, end);
     const body = await response.json();
     const unreservedSites = getUnreservedSites(body.campsites);
     return unreservedSites;

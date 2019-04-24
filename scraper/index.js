@@ -7,6 +7,10 @@ const { sendEmail } = require("./mail");
 const { sendText } = require("./twilio");
 const log = require("./../logging");
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * Job
  *   location: Yosemite, Tuolumne
@@ -42,12 +46,24 @@ async function main() {
   }
   if (sites.length > 0) {
     log.info(`found ${sites.length} for ${campgroundId}`, sites);
+    if (process.env.NODE_ENV == "dev" && config.notifications.email) {
+      const campsiteBaseUrl = `https://www.recreation.gov/camping/campsites/`;
+      const message = sites.reduce((str, site) => {
+        str += campsiteBaseUrl + site.campsite_id + "\n";
+        return str;
+      }, "Cancelations on: \n");
+      await sendEmail(config.notifications.email, message);
+      await sendText(config.notifications.phoneNumber, message);
+    }
     try {
+      log.debug("Logging in with", config.recreationUser);
       // log in
       const accountDetails = await login(
         config.recreationUser.email,
         config.recreationUser.pass
       );
+      // Jitter wait after log in.
+      await timeout(Math.random() * 10000);
       // check cart
       const activeReservations = await checkCart(accountDetails.access_token);
       if (activeReservations.length > 0) {
@@ -92,7 +108,11 @@ async function main() {
   }
   log.info("no sites found");
 }
-log.info(`scraper starting for the following dates ${config.startDate} - ${config.endDate}`);
+log.info(
+  `scraper starting for the following dates ${config.startDate} - ${
+    config.endDate
+  }`
+);
 main();
 setInterval(() => {
   main();
