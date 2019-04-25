@@ -85,6 +85,7 @@ async function checkAvailability(siteId, startDate, endDate) {
       endDate,
       error: String(error)
     });
+    return [];
   }
 }
 module.exports = {
