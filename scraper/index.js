@@ -24,6 +24,7 @@ function timeout(ms) {
  *   checkout: boolean
  */
 async function main() {
+  log.info(`checking sites at: ${new Date()}`)
   const ids = config.campgroundIds;
   let campgroundId;
 
@@ -63,7 +64,7 @@ async function main() {
         config.recreationUser.pass
       );
       // Jitter wait after log in.
-      await timeout(Math.random() * 10000);
+      await timeout(Math.random() * 1000 * 60 * 1.5);
       // check cart
       const activeReservations = await checkCart(accountDetails.access_token);
       if (activeReservations.length > 0) {
@@ -110,7 +111,7 @@ async function main() {
 }
 log.info(
   `scraper starting for the following dates ${config.startDate} - ${
-    config.endDate
+  config.endDate
   }`
 );
 main();

@@ -4,7 +4,7 @@ By default this scraper will only notify you of campsite availability. It can be
 ## Quick Start
 
 ### Setting up a job.
-- Create a file name `.config.json` with the parameters found in `.config.example.json`
+- Create a file name `.config.js` with the parameters found in `.config.example.js`
   - Example:
 ```js
     {
@@ -31,15 +31,7 @@ By default this scraper will only notify you of campsite availability. It can be
 ```
 - the mailer config should mimic the parameters and structures found in the [nodemailer-wellknown documentation](https://github.com/nodemailer/nodemailer-wellknown)
   Note that if your well-known isn't working you can set it up from scratch. Setup found in the  [nodemailer repo](https://github.com/nodemailer/nodemailer)  
-
-Once the config is set you should be able to run `node scraper/index.js`
-
-If you want to see dev log output run `NODE_ENV=dev node scraper/index.js`
-
-## File Structure
-### index.js
-This is the entry point for the scraper. You can set this up to run a function on setInterval or more preferably just install a cron job\* that runs it at whatever frequency you want.
-\*. Note that this scraper for one date can take about 15 seconds to run. Electron has a prohibitively long boot up time but gives you the benefit of being able to write really high level scripts.
-
-This is where you decide how you want your scraper to run.
-check_site.
+- Once configuration is setup run `npm install` within the project to install the dependencies
+- To run the scraper run `node scraper/index.js`
+- If you want to see dev log output run `NODE_ENV=dev node scraper/index.js` I typically use this on first setup.
+- error logs can be found in scraper.error.log, these are structured logs and can be viewed with any structured log viewer.

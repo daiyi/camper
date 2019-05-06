@@ -4,18 +4,23 @@ var config = require("./../.config");
 var log = require("./../logging");
 const util = require("util");
 
-var transporter = nodemailer.createTransport(config.mailer);
+try {
+  var transporter = nodemailer.createTransport(config.mailer);
+} catch (e) {
+  console.error(e);
+}
 
-transporter.verify(function(error, success) {
+transporter.verify(function (error, success) {
+  log.debug("Verifying transport", error, success)
   if (error) {
     log.error(error);
-    process.exit(1);
+    // process.exit(1);
   } else {
     log.info("Mail server is ready to take messages");
   }
 });
 
-var sendEmail = async function(email, message) {
+var sendEmail = async function (email, message) {
   var mailOptions = {
     from: `"Campsite Camper" <${config.mailer.auth.user}>`, // sender address
     to: email, // list of receivers
@@ -32,8 +37,8 @@ var sendEmail = async function(email, message) {
   }
 };
 
-var multiMail = function(emails, message) {
-  emails.forEach(function(email) {
+var multiMail = function (emails, message) {
+  emails.forEach(function (email) {
     email(email, message);
   });
 };
