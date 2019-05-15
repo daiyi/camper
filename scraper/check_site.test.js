@@ -4,7 +4,7 @@ const { isSiteAvailable, getUnreservedSites } = require("./check_site");
  *
  * @param {String} siteNumber string representing the site number
  */
-const allDaysAvailableSite = function(siteNumber) {
+const allDaysAvailableSite = function (siteNumber) {
   return {
     availabilities: {
       "2018-10-30T00:00:00Z": "Available",
@@ -22,7 +22,7 @@ const allDaysAvailableSite = function(siteNumber) {
  *
  * @param {String} siteNumber string representing the site number
  */
-const someDaysAvailableSite = function(siteNumber) {
+const someDaysAvailableSite = function (siteNumber) {
   return {
     availabilities: {
       "2018-10-31T00:00:00Z": "Available",
@@ -40,7 +40,7 @@ const someDaysAvailableSite = function(siteNumber) {
  *
  * @param {String} siteNumber string representing the site number
  */
-const noDaysAvailableSite = function(siteNumber) {
+const noDaysAvailableSite = function (siteNumber) {
   return {
     availabilities: {
       "2018-10-30T00:00:00Z": "Reserved",
@@ -72,7 +72,6 @@ describe.only("isSiteAvailable", () => {
   test("When availability object is empty", () => {
     let test = noDaysAvailableSite("104");
     test.availabilities = {};
-    console.log(test);
     expect(isSiteAvailable(test)).toBe(false);
   });
 });

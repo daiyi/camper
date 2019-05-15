@@ -27,6 +27,8 @@ async function main() {
   log.info(`checking sites at: ${new Date()}`)
   const ids = config.campgroundIds;
   let campgroundId;
+  config.startDate = new Date(config.startDate)
+  config.endDate = new Date(config.endDate)
 
   let sites = [];
   for (let i = 0; i < ids.length; i++) {
