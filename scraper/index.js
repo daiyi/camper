@@ -1,14 +1,34 @@
+if (process.env.NODE_ENV !== "production") {
+  const result = require("dotenv").config();
+  if (result.error) {
+    throw result.error;
+  }
+}
+
+const config = require("./../.config.js");
+const beeline = require("honeycomb-beeline")({
+  writeKey: config.honeycombKey,
+  dataset: "camper"
+});
+
 const { checkAvailability } = require("./check_site");
 const login = require("./login");
 const bookNow = require("./book_now");
 const checkCart = require("./check_cart.js");
-const config = require("./../.config.js");
 const { sendEmail } = require("./mail");
-const { sendText } = require("./twilio");
 const log = require("./../logging");
 
 function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function newTrace() {
+  return beeline.startTrace({
+    serviceName: "checkjob",
+    startDate: config.startDate,
+    endDate: config.endDate,
+    notifications: config.notifications
+  });
 }
 
 /**
@@ -23,16 +43,24 @@ function timeout(ms) {
  *   notify: boolean
  *   checkout: boolean
  */
-async function main() {
-  log.info(`checking sites at: ${new Date()}`)
+async function main(trace) {
+  const { sendText } = require("./twilio");
+
+  log.info(`checking sites at: ${new Date()}`);
   const ids = config.campgroundIds;
   let campgroundId;
-  config.startDate = new Date(config.startDate)
-  config.endDate = new Date(config.endDate)
+  config.startDate = new Date(config.startDate);
+  config.endDate = new Date(config.endDate);
 
   let sites = [];
   for (let i = 0; i < ids.length; i++) {
     campgroundId = ids[i];
+    let span = beeline.startSpan({
+      name: "checkCampground",
+      campgroundId: campgroundId,
+      startDate: config.startDate,
+      endDate: config.endDate
+    });
     try {
       sites = await checkAvailability(
         campgroundId,
@@ -40,12 +68,21 @@ async function main() {
         config.endDate
       );
     } catch (e) {
-      log.error(`Failed to check  ${campgroundId}`, e);
+      const errorMsg = `Failed to check  ${campgroundId}`;
+      beeline.customContext.add("error", errorMsg);
+      beeline.finishSpan(span);
+      log.error(errorMsg, e);
     }
     if (sites.length) {
+      span.sitesFound = sites.length;
+      trace.sitesFound = sites.length;
+      beeline.finishSpan(span);
       break;
     }
     log.info(`no sites found at ${ids[i]}`);
+    span.sitesFound = sites.length;
+    trace.sitesFound = sites.length;
+    beeline.finishSpan(span);
   }
   if (sites.length > 0) {
     log.info(`found ${sites.length} for ${campgroundId}`, sites);
@@ -55,7 +92,7 @@ async function main() {
         str += campsiteBaseUrl + site.campsite_id + "\n";
         return str;
       }, "Cancelations on: \n");
-      await sendEmail(config.notifications.email, message);
+      await sendEmail(config.notifications.email, message, beeline);
       await sendText(config.notifications.phoneNumber, message);
     }
     try {
@@ -110,13 +147,12 @@ async function main() {
     }
   }
   log.info("no sites found");
+  beeline.finishTrace(trace);
 }
 log.info(
-  `scraper starting for the following dates ${config.startDate} - ${
-  config.endDate
-  }`
+  `scraper starting for the following dates ${config.startDate} - ${config.endDate}`
 );
-main();
+main(newTrace());
 setInterval(() => {
-  main();
+  main(newTrace());
 }, 1000 * 60 * 5); // ms * s * m
