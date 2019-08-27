@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm scraper.debug.log; rm scraper.error.log;",
-    "build": "cp node_modules/bulma/css/bulma.min.css server/static/bulma.min.css",
+    "build": "npm i && npm run scraper",
     "scraper": "node scraper/index.js"
   },
   "author": "",
