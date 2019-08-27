@@ -4,3 +4,4 @@ node_modules
 *.log
 scraper.db
 .DS_Store
+.env
