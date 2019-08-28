@@ -5,3 +5,4 @@ node_modules
 scraper.db
 .DS_Store
 .env
+.env.build
