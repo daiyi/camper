@@ -13,10 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "bulma": "0.7.2",
+    "cron": "^1.7.1",
     "dotenv": "^8.1.0",
     "express": "4.16.4",
     "honeycomb-beeline": "^1.7.0",
-    "jade": "1.11.0",
     "knex": "0.15.2",
     "node-fetch": "2.2.0",
     "nodemailer": "^2.7.2",
