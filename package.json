@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm scraper.debug.log; rm scraper.error.log;",
-    "build": "npm i && npm run scraper",
+    "build": "npm i && npm run scraper &",
     "scraper": "node scraper/index.js"
   },
   "author": "",

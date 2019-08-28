@@ -1,15 +1,16 @@
+// load .env vars for dev
 if (process.env.NODE_ENV !== "production") {
   const result = require("dotenv").config();
   if (result.error) {
     throw result.error;
   }
 }
-
 const config = require("./../.config.js");
 const beeline = require("honeycomb-beeline")({
   writeKey: config.honeycombKey,
   dataset: "camper"
 });
+beeline.customContext.add("env.node_env", process.env.NODE_ENV);
 
 const { checkAvailability } = require("./check_site");
 const login = require("./login");
@@ -93,7 +94,7 @@ async function main(trace) {
         return str;
       }, "Cancelations on: \n");
       await sendEmail(config.notifications.email, message, beeline);
-      await sendText(config.notifications.phoneNumber, message);
+      await sendText(config.notifications.phoneNumber, message, beeline);
     }
     try {
       log.debug("Logging in with", config.recreationUser);
@@ -134,7 +135,8 @@ async function main(trace) {
       if (config.notifications.phoneNumber) {
         await sendText(
           config.notifications.phoneNumber,
-          `Your reservation has been created. Login to recreation.gov and finish checking out. You have 15 minutes`
+          `Your reservation has been created. Login to recreation.gov and finish checking out. You have 15 minutes`,
+          beeline
         );
       }
       // else

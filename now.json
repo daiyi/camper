@@ -1,6 +1,7 @@
 {
   "build": {
     "env": {
+      "NODE_ENV": "production",
       "MAILER_USER": "@mailer_user",
       "MAILER_PASS": "@mailer_pass",
       "TWILIO_SID": "@twilio_sid",
@@ -10,8 +11,10 @@
       "REC_AUTH": "@rec_auth",
       "NOTIFICATION_PHONE": "@notification_phone",
       "NOTIFICATION_EMAIL": "@notification_email",
-      "HONEYCOMB_KEY": "@honeycomb_key",
-      "NODE_ENV": "production"
+      "HONEYCOMB_KEY": "@honeycomb_key"
     }
-  }
+  },
+  "env": {},
+  "version": 2,
+  "alias": ["yosemite.now.sh"]
 }
