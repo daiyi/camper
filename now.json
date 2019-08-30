@@ -16,6 +16,22 @@
     }
   },
   "env": {},
-  "version": 1,
-  "alias": ["yosemite.now.sh"]
+  "version": 2,
+  "alias": ["yosemite.now.sh"],
+  "builds": [
+    {
+      "src": "public/**/*",
+      "use": "@now/static"
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "public/index.html"
+    }
+  ]
 }

@@ -45,3 +45,7 @@ By default this scraper will only notify you of campsite availability. It can be
 2. run: `now`
 3. wait for deploy to finish. then, scale min to 1 so it doesn't freeze: `now scale <build_url> 1`. 
   - for example, `now scale camper-cmkj20htu9.now.sh 3`
+
+
+notes:
+express docs: https://github.com/zeit/now-examples/tree/05c2e92b1ec789777d76bffd39a578b2b0a0d8a9/express

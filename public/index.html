@@ -1,1 +1,23 @@
-hi [_.]^
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>yosemite pls</title>
+    <link rel="stylesheet" href="/www/style.css" />
+  </head>
+  <body>
+    <p>[_.]^</p>
+    <div class="js-date"></div>
+    <script>
+      function main() {
+        return fetch('/api/index.js')
+          .then(function(response) {
+            return response.text();
+          })
+          .then(function(date) {
+            document.querySelector('.js-date').textContent = date;
+          });
+      }
+      main();
+    </script>
+  </body>
+</html>
