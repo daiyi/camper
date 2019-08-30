@@ -2,11 +2,11 @@
   "name": "recreation-gov-scraper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm scraper.debug.log; rm scraper.error.log;",
-    "build": "npm i && npm run scraper &",
+    "start": "npm i && NODE_ENV=production npm run scraper",
+    "dev": "NODE_ENV=dev npm run scraper",
     "scraper": "node scraper/index.js"
   },
   "author": "",

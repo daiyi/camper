@@ -35,3 +35,13 @@ By default this scraper will only notify you of campsite availability. It can be
 - To run the scraper run `node scraper/index.js`
 - If you want to see dev log output run `NODE_ENV=dev node scraper/index.js` I typically use this on first setup.
 - error logs can be found in scraper.error.log, these are structured logs and can be viewed with any structured log viewer.
+
+## develop locally
+1. `npm run dev`
+
+## deploy to zeit
+
+1. install `now`: `npm install now -g`
+2. run: `now`
+3. wait for deploy to finish. then, scale min to 1 so it doesn't freeze: `now scale <build_url> 1`. 
+  - for example, `now scale camper-cmkj20htu9.now.sh 3`
